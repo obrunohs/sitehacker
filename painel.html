@@ -6,7 +6,6 @@
   <title>Painel</title>
 
   <style>
-
     *{
       margin:0;
       padding:0;
@@ -22,12 +21,43 @@
 
     h1{
       color:#ff0033;
-      margin-bottom:20px;
+      margin-bottom:15px;
+      text-shadow:0 0 10px #ff0033;
+    }
 
-      text-shadow:
-      0 0 5px #ff0033,
-      0 0 10px #ff0033,
-      0 0 20px #ff0033;
+    .topo{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
+    }
+
+    button{
+      padding:14px 20px;
+      border:none;
+      border-radius:10px;
+      background:#ff0033;
+      color:white;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+      box-shadow:0 0 10px #ff0033;
+    }
+
+    button:hover{
+      background:#ff2255;
+      transform:scale(1.03);
+    }
+
+    .aviso{
+      display:none;
+      margin:15px 0;
+      padding:15px;
+      border-radius:10px;
+      background:#00ccff;
+      color:#000;
+      font-weight:bold;
+      animation:piscarAviso .6s infinite alternate;
     }
 
     table{
@@ -37,7 +67,7 @@
       background:#1b1b1b;
     }
 
-    th, td{
+    th,td{
       border:1px solid #333;
       padding:12px;
       text-align:left;
@@ -45,54 +75,45 @@
 
     th{
       background:#ff0033;
-      color:white;
     }
 
     tr:nth-child(even){
       background:#202020;
     }
 
-    button{
-      margin-top:20px;
-
-      padding:14px 20px;
-
-      border:none;
-      border-radius:10px;
-
-      background:#ff0033;
-
-      color:white;
-
-      font-size:16px;
-      font-weight:bold;
-
-      cursor:pointer;
-
-      transition:.3s;
-
-      box-shadow:
-      0 0 10px #ff0033,
-      0 0 20px #ff0033;
+    .linha-nova{
+      animation:linhaNova 1s infinite alternate;
     }
 
-    button:hover{
-      background:#ff2255;
-      transform:scale(1.03);
+    @keyframes piscarAviso{
+      from{ opacity:.4; }
+      to{ opacity:1; }
     }
 
+    @keyframes linhaNova{
+      from{
+        background:#ff0033;
+      }
+      to{
+        background:#2b2b2b;
+      }
+    }
   </style>
 </head>
 <body>
 
   <h1>Painel de Envios</h1>
 
-  <button onclick="limparDados()">
-    Limpar Dados
-  </button>
+  <div class="topo">
+    <button onclick="ativarSom()">Ativar Som</button>
+    <button onclick="limparDados()">Limpar Dados</button>
+  </div>
+
+  <div id="aviso" class="aviso">
+    Novo envio recebido!
+  </div>
 
   <table>
-
     <thead>
       <tr>
         <th>Primeiro Nome</th>
@@ -102,11 +123,9 @@
     </thead>
 
     <tbody id="lista"></tbody>
-
   </table>
 
   <script type="module">
-
     import { initializeApp }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
@@ -123,79 +142,119 @@
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     const firebaseConfig = {
-
       apiKey: "AIzaSyB86l1AotdIkRmCzWs65iV9NYltwq48Fk8",
       authDomain: "site18-4dd46.firebaseapp.com",
       projectId: "site18-4dd46",
       storageBucket: "site18-4dd46.firebasestorage.app",
       messagingSenderId: "174794961690",
       appId: "1:174794961690:web:781acedc7483ddf78a72a3"
-
     };
 
-    const app =
-    initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    const db =
-    getFirestore(app);
+    const lista = document.getElementById("lista");
+    const aviso = document.getElementById("aviso");
 
-    const lista =
-    document.getElementById("lista");
+    let somAtivado = false;
+    let primeiraLeitura = true;
+    let quantidadeAnterior = 0;
+    let ultimoIdNovo = "";
 
-    const q =
-    query(
+    window.ativarSom = function(){
+      somAtivado = true;
+      tocarBeep();
+      alert("Som ativado com sucesso!");
+    };
+
+    function tocarBeep(){
+      if(!somAtivado) return;
+
+      const audioContext = new AudioContext();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.value = 900;
+
+      gainNode.gain.value = 0.2;
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.start();
+
+      setTimeout(() => {
+        oscillator.stop();
+        audioContext.close();
+      }, 300);
+    }
+
+    function mostrarAviso(){
+      aviso.style.display = "block";
+
+      setTimeout(() => {
+        aviso.style.display = "none";
+      }, 4000);
+    }
+
+    const q = query(
       collection(db, "envios"),
       orderBy("criadoEm", "desc")
     );
 
     onSnapshot(q, (snapshot) => {
-
       lista.innerHTML = "";
 
-      snapshot.forEach((documento) => {
+      const quantidadeAtual = snapshot.size;
 
+      if(!primeiraLeitura && quantidadeAtual > quantidadeAnterior){
+        tocarBeep();
+        mostrarAviso();
+
+        if(snapshot.docs.length > 0){
+          ultimoIdNovo = snapshot.docs[0].id;
+        }
+      }
+
+      snapshot.forEach((documento) => {
         const item = documento.data();
 
+        const classeNova =
+        documento.id === ultimoIdNovo ? "linha-nova" : "";
+
         lista.innerHTML += `
-          <tr>
+          <tr class="${classeNova}">
             <td>${item.primeiroNome}</td>
             <td>${item.segundoNome}</td>
             <td>${item.data}</td>
           </tr>
         `;
-
       });
 
+      quantidadeAnterior = quantidadeAtual;
+      primeiraLeitura = false;
     });
 
     window.limparDados = async function(){
-
-      const confirmar =
-      confirm(
-        "Deseja apagar todos os dados?"
-      );
+      const confirmar = confirm("Deseja apagar todos os dados?");
 
       if(!confirmar){
         return;
       }
 
-      const querySnapshot =
-      await getDocs(
+      const querySnapshot = await getDocs(
         collection(db, "envios")
       );
 
       querySnapshot.forEach(async (item) => {
-
         await deleteDoc(
           doc(db, "envios", item.id)
         );
-
       });
 
       alert("Todos os dados foram apagados!");
-
     };
-
   </script>
 
 </body>
