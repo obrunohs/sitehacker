@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      background:#111;
+      color:white;
+      padding:30px;
+    }
+
+    h1{
+      color:#ff0033;
+      margin-bottom:20px;
+
+      text-shadow:
+      0 0 5px #ff0033,
+      0 0 10px #ff0033,
+      0 0 20px #ff0033;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+      background:#1b1b1b;
+    }
+
+    th, td{
+      border:1px solid #333;
+      padding:12px;
+      text-align:left;
+    }
+
+    th{
+      background:#ff0033;
+      color:white;
+    }
+
+    tr:nth-child(even){
+      background:#202020;
+    }
+
+    button{
+      margin-top:20px;
+
+      padding:14px 20px;
+
+      border:none;
+      border-radius:10px;
+
+      background:#ff0033;
+
+      color:white;
+
+      font-size:16px;
+      font-weight:bold;
+
+      cursor:pointer;
+
+      transition:.3s;
+
+      box-shadow:
+      0 0 10px #ff0033,
+      0 0 20px #ff0033;
+    }
+
+    button:hover{
+      background:#ff2255;
+      transform:scale(1.03);
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Painel de Envios</h1>
+
+  <button onclick="limparDados()">
+    Limpar Dados
+  </button>
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Primeiro Nome</th>
+        <th>Segundo Nome</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+
+    <tbody id="lista"></tbody>
+
+  </table>
+
+  <script type="module">
+
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+    import {
+      getFirestore,
+      collection,
+      onSnapshot,
+      query,
+      orderBy,
+      getDocs,
+      deleteDoc,
+      doc
+    }
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyB86l1AotdIkRmCzWs65iV9NYltwq48Fk8",
+      authDomain: "site18-4dd46.firebaseapp.com",
+      projectId: "site18-4dd46",
+      storageBucket: "site18-4dd46.firebasestorage.app",
+      messagingSenderId: "174794961690",
+      appId: "1:174794961690:web:781acedc7483ddf78a72a3"
+
+    };
+
+    const app =
+    initializeApp(firebaseConfig);
+
+    const db =
+    getFirestore(app);
+
+    const lista =
+    document.getElementById("lista");
+
+    const q =
+    query(
+      collection(db, "envios"),
+      orderBy("criadoEm", "desc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+
+      lista.innerHTML = "";
+
+      snapshot.forEach((documento) => {
+
+        const item = documento.data();
+
+        lista.innerHTML += `
+          <tr>
+            <td>${item.primeiroNome}</td>
+            <td>${item.segundoNome}</td>
+            <td>${item.data}</td>
+          </tr>
+        `;
+
+      });
+
+    });
+
+    window.limparDados = async function(){
+
+      const confirmar =
+      confirm(
+        "Deseja apagar todos os dados?"
+      );
+
+      if(!confirmar){
+        return;
+      }
+
+      const querySnapshot =
+      await getDocs(
+        collection(db, "envios")
+      );
+
+      querySnapshot.forEach(async (item) => {
+
+        await deleteDoc(
+          doc(db, "envios", item.id)
+        );
+
+      });
+
+      alert("Todos os dados foram apagados!");
+
+    };
+
+  </script>
+
+</body>
+</html>
