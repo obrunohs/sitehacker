@@ -168,6 +168,16 @@
     };
 
     function tocarBeep(){
+
+  if(!somAtivado) return;
+
+  const audio = new Audio("alerta.mp3");
+
+  audio.volume = 1;
+
+  audio.play();
+
+}{
       if(!somAtivado) return;
 
       const audioContext = new AudioContext();
