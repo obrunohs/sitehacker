@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>+18</title>
+  <title>Painel</title>
 
   <style>
-
     *{
       margin:0;
       padding:0;
@@ -15,309 +14,247 @@
     }
 
     body{
-      height:100vh;
-      overflow:hidden;
-
-      background:url('fundo.jpg') no-repeat center center/cover;
-
-      position:relative;
-    }
-
-    .overlay{
-      width:100%;
-      height:100%;
-
-      background:linear-gradient(
-        rgba(0,0,0,.85),
-        rgba(20,0,20,.85)
-      );
-
-      display:flex;
-      justify-content:center;
-      align-items:center;
-    }
-
-    .box{
-      width:100%;
-      max-width:420px;
-
-      background:rgba(255,255,255,.08);
-
-      backdrop-filter:blur(8px);
-
-      border:1px solid rgba(255,255,255,.2);
-
-      border-radius:20px;
-
-      padding:25px;
-
-      text-align:center;
-
+      background:#111;
       color:white;
-
-      z-index:10;
-
-      box-shadow:
-      0 0 20px rgba(255,0,80,.4),
-      0 0 40px rgba(255,0,80,.2);
-    }
-
-    .banner{
-      width:100%;
-      height:170px;
-
-      background:url('banner.jpg') no-repeat center center/cover;
-
-      border-radius:15px;
-
-      margin-bottom:20px;
-
-      border:2px solid rgba(255,255,255,.2);
+      padding:30px;
     }
 
     h1{
-      font-size:42px;
-
-      margin-bottom:10px;
-
-      color:#ff00ff;
-
-      text-shadow:
-      0 0 5px #ff00ff,
-      0 0 10px #ff00ff,
-      0 0 20px #ff00ff;
-
-      animation:glitch .2s infinite;
-    }
-
-    .descricao{
-      font-size:16px;
-      margin-bottom:20px;
-
-      text-shadow:
-      0 0 5px #ff00ff;
-    }
-
-    .label{
-      text-align:left;
-      margin-bottom:8px;
-      font-size:15px;
-    }
-
-    input{
-      width:100%;
-
-      padding:14px;
-
-      margin-bottom:18px;
-
-      border:none;
-      outline:none;
-
-      border-radius:10px;
-
-      background:rgba(255,255,255,.15);
-
-      color:white;
-
-      font-size:16px;
-    }
-
-    input::placeholder{
-      color:rgba(255,255,255,.7);
-    }
-
-    button{
-      width:100%;
-
-      padding:14px;
-
-      border:none;
-
-      border-radius:10px;
-
-      background:#ff0033;
-
-      color:white;
-
-      font-size:18px;
-      font-weight:bold;
-
-      cursor:pointer;
-
-      transition:.3s;
-
-      box-shadow:
-      0 0 10px #ff0033,
-      0 0 20px #ff0033;
-    }
-
-    button:hover{
-      transform:scale(1.03);
-
-      background:#ff2255;
-    }
-
-    .neon-text{
-      position:absolute;
-
-      font-size:42px;
-
-      font-weight:bold;
-
-      opacity:.2;
-
-      animation:piscar 1s infinite alternate;
-    }
-
-    .pink{
-      color:#ff00ff;
-      text-shadow:0 0 10px #ff00ff;
-    }
-
-    .blue{
-      color:#00ccff;
-      text-shadow:0 0 10px #00ccff;
-    }
-
-    .red{
       color:#ff0033;
+      margin-bottom:15px;
       text-shadow:0 0 10px #ff0033;
     }
 
-    .purple{
-      color:#9900ff;
-      text-shadow:0 0 10px #9900ff;
+    .topo{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
     }
 
-    @keyframes piscar{
-      from{ opacity:.1; }
-      to{ opacity:.9; }
+    button{
+      padding:14px 20px;
+      border:none;
+      border-radius:10px;
+      background:#ff0033;
+      color:white;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+      box-shadow:0 0 10px #ff0033;
     }
 
-    @keyframes glitch{
-      0%{ transform:translate(1px,1px); }
-      50%{ transform:translate(-2px,-1px); }
-      100%{ transform:translate(1px,-1px); }
+    button:hover{
+      background:#ff2255;
+      transform:scale(1.03);
     }
 
+    .aviso{
+      display:none;
+      margin:15px 0;
+      padding:15px;
+      border-radius:10px;
+      background:#00ccff;
+      color:#000;
+      font-weight:bold;
+      animation:piscarAviso .6s infinite alternate;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+      background:#1b1b1b;
+    }
+
+    th,td{
+      border:1px solid #333;
+      padding:12px;
+      text-align:left;
+    }
+
+    th{
+      background:#ff0033;
+    }
+
+    tr:nth-child(even){
+      background:#202020;
+    }
+
+    .linha-nova{
+      animation:linhaNova 1s infinite alternate;
+    }
+
+    @keyframes piscarAviso{
+      from{ opacity:.4; }
+      to{ opacity:1; }
+    }
+
+    @keyframes linhaNova{
+      from{
+        background:#ff0033;
+      }
+      to{
+        background:#2b2b2b;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- TEXTOS FUNDO -->
-  <div class="neon-text pink" style="top:8%; left:5%;">
-    +18 ONLY
+  <h1>Painel de Envios</h1>
+
+  <div class="topo">
+    <button onclick="ativarSom()">Ativar Som</button>
+    <button onclick="limparDados()">Limpar Dados</button>
   </div>
 
-  <div class="neon-text blue" style="top:18%; right:5%;">
-    VIP CONTENT
+  <div id="aviso" class="aviso">
+    Novo envio recebido!
   </div>
 
-  <div class="neon-text red" style="bottom:15%; left:8%;">
-    PRIVATE AREA
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Primeiro Nome</th>
+        <th>Segundo Nome</th>
+        <th>Data</th>
+      </tr>
+    </thead>
 
-  <div class="neon-text purple" style="bottom:8%; right:10%;">
-    ACCESS 18+
-  </div>
-
-  <div class="overlay">
-
-    <div class="box">
-
-      <div class="banner"></div>
-
-      <h1>+18</h1>
-
-      <p class="descricao">
-        Envie seu nome
-      </p>
-
-      <div class="label">
-        Digite o primeiro nome
-      </div>
-
-      <input
-        type="text"
-        id="nome1"
-        placeholder="Primeiro nome"
-      >
-
-      <input
-        type="password"
-        id="nome2"
-        placeholder="Segundo nome"
-      >
-
-      <button onclick="enviar()">
-        Enviar
-      </button>
-
-    </div>
-
-  </div>
+    <tbody id="lista"></tbody>
+  </table>
 
   <script type="module">
-
     import { initializeApp }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
     import {
       getFirestore,
       collection,
-      addDoc,
-      serverTimestamp
+      onSnapshot,
+      query,
+      orderBy,
+      getDocs,
+      deleteDoc,
+      doc
     }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     const firebaseConfig = {
-
       apiKey: "AIzaSyB86l1AotdIkRmCzWs65iV9NYltwq48Fk8",
       authDomain: "site18-4dd46.firebaseapp.com",
       projectId: "site18-4dd46",
       storageBucket: "site18-4dd46.firebasestorage.app",
       messagingSenderId: "174794961690",
       appId: "1:174794961690:web:781acedc7483ddf78a72a3"
-
     };
 
-    const app =
-    initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    const db =
-    getFirestore(app);
+    const lista = document.getElementById("lista");
+    const aviso = document.getElementById("aviso");
 
-    window.enviar = async function(){
+    let somAtivado = false;
+    let primeiraLeitura = true;
+    let quantidadeAnterior = 0;
+    let ultimoIdNovo = "";
 
-      const nome1 =
-      document.getElementById("nome1").value.trim();
+    window.ativarSom = function(){
+      somAtivado = true;
+      tocarBeep();
+      alert("Som ativado com sucesso!");
+    };
 
-      const nome2 =
-      document.getElementById("nome2").value.trim();
+    function tocarBeep(){
+      if(!somAtivado) return;
 
-      if(nome1 === "" || nome2 === ""){
-        alert("Preencha os campos");
+      const audioContext = new AudioContext();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.value = 900;
+
+      gainNode.gain.value = 0.2;
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.start();
+
+      setTimeout(() => {
+        oscillator.stop();
+        audioContext.close();
+      }, 300);
+    }
+
+    function mostrarAviso(){
+      aviso.style.display = "block";
+
+      setTimeout(() => {
+        aviso.style.display = "none";
+      }, 4000);
+    }
+
+    const q = query(
+      collection(db, "envios"),
+      orderBy("criadoEm", "desc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+      lista.innerHTML = "";
+
+      const quantidadeAtual = snapshot.size;
+
+      if(!primeiraLeitura && quantidadeAtual > quantidadeAnterior){
+        tocarBeep();
+        mostrarAviso();
+
+        if(snapshot.docs.length > 0){
+          ultimoIdNovo = snapshot.docs[0].id;
+        }
+      }
+
+      snapshot.forEach((documento) => {
+        const item = documento.data();
+
+        const classeNova =
+        documento.id === ultimoIdNovo ? "linha-nova" : "";
+
+        lista.innerHTML += `
+          <tr class="${classeNova}">
+            <td>${item.primeiroNome}</td>
+            <td>${item.segundoNome}</td>
+            <td>${item.data}</td>
+          </tr>
+        `;
+      });
+
+      quantidadeAnterior = quantidadeAtual;
+      primeiraLeitura = false;
+    });
+
+    window.limparDados = async function(){
+      const confirmar = confirm("Deseja apagar todos os dados?");
+
+      if(!confirmar){
         return;
       }
 
-      await addDoc(
-        collection(db, "envios"),
-        {
-          primeiroNome: nome1,
-          segundoNome: nome2,
-          data: new Date().toLocaleString(),
-          criadoEm: serverTimestamp()
-        }
+      const querySnapshot = await getDocs(
+        collection(db, "envios")
       );
 
-      alert("Dados enviados!");
+      querySnapshot.forEach(async (item) => {
+        await deleteDoc(
+          doc(db, "envios", item.id)
+        );
+      });
 
-      document.getElementById("nome1").value = "";
-      document.getElementById("nome2").value = "";
-
+      alert("Todos os dados foram apagados!");
     };
-
   </script>
 
 </body>
